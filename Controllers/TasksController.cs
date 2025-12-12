@@ -46,7 +46,7 @@ namespace TeamTasker.API.Controllers
                 Title = dto.Title,
                 Description = dto.Description,
                 UserId = dto.UserId,
-                Status = TaskStatusEnum.Pendente,
+                Status = dto.Status,
                 CreatedAt = DateTime.Now
             };
 
