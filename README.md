@@ -3,6 +3,14 @@
 API RESTful desenvolvida com **.NET 8** para gerenciamento de tarefas de equipes.
 Este projeto demonstra a implementação de uma arquitetura robusta, limpa e escalável, focada em boas práticas de mercado.
 
+## ☁️ Teste Online
+
+A API está hospedada e funcional! Você pode testar todos os endpoints (Criar usuários, tarefas, etc) diretamente pelo Swagger na nuvem:
+
+👉 **[CLIQUE AQUI PARA ACESSAR O SWAGGER ONLINE](http://teamtasker-victor.runasp.net/swagger/index.html)**
+
+---
+
 ## 🛠️ Tecnologias Utilizadas
 
 * **C# / .NET 8** (LTS)
