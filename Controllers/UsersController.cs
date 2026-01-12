@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TeamTasker.API.DTOs;
 using TeamTasker.API.Entities;
@@ -5,6 +6,7 @@ using TeamTasker.API.Repositories;
 
 namespace TeamTasker.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
@@ -23,13 +25,16 @@ namespace TeamTasker.API.Controllers
             return Ok(users);
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Create(CreateUserDto dto)
         {
             var user = new User
             {
                 Name = dto.Name,
-                Email = dto.Email
+                Email = dto.Email,
+                Password = dto.Password
+
             };
 
             await _repository.AddAsync(user);

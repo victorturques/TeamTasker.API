@@ -10,5 +10,7 @@ namespace TeamTasker.API.DTOs
         [Required(ErrorMessage = "O email é obrigatório")]
         [EmailAddress(ErrorMessage = "Formato de email inválido")]
         public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+    
     }
 }

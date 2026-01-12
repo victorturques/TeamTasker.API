@@ -10,5 +10,6 @@ namespace TeamTasker.API.Entities
 
         [JsonIgnore]
         public List<JobTask> JobTasks { get; set; } = new();
+        public string Password { get; internal set; } = string.Empty;
     }
 }

@@ -5,7 +5,7 @@ namespace TeamTasker.API.Mappers
 {
     public static class TaskMapper
     {
-        // O "this" na frente do parâmetro é o que cria a mágica do Extension Method
+        
         public static TaskResponseDto ToDto(this JobTask task)
         {
             return new TaskResponseDto

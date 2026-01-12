@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TeamTasker.API.DTOs;
 using TeamTasker.API.Entities;
@@ -7,15 +8,16 @@ using TeamTasker.API.Repositories;
 
 namespace TeamTasker.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class TasksController : ControllerBase
     {
-        // Agora temos DOIS assistentes (Repositórios)
+        
         private readonly ITaskRepository _taskRepository;
         private readonly IUserRepository _userRepository;
 
-        // Injetamos os dois no construtor
+        
         public TasksController(ITaskRepository taskRepository, IUserRepository userRepository)
         {
             _taskRepository = taskRepository;
@@ -33,13 +35,12 @@ namespace TeamTasker.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateTaskDto dto)
         {
-            // --- MUDANÇA AQUI ---
-            // Usamos o método pronto do repositório de usuários
+           
             if (!await _userRepository.UserExistsAsync(dto.UserId))
             {
                 return BadRequest("Usuário não encontrado. Verifique o ID enviado.");
             }
-            // --------------------
+            
 
             var newTask = new JobTask
             {
@@ -64,15 +65,15 @@ namespace TeamTasker.API.Controllers
 
             if (task == null) return NotFound("Tarefa não encontrada.");
 
-            // Verifica se mudou de dono
+           
             if (dto.UserId != task.UserId)
             {
-                // --- MUDANÇA AQUI TAMBÉM ---
+                
                 if (!await _userRepository.UserExistsAsync(dto.UserId))
                 {
                     return BadRequest("O novo usuário informado não existe.");
                 }
-                // ---------------------------
+                
             }
 
             task.Title = dto.Title;

@@ -23,6 +23,13 @@ namespace TeamTasker.API.Repositories
             return await _context.Users.FindAsync(id);
         }
 
+        public async Task<User?> GetUserByEmailAsync(string email)
+        {            
+            return await _context.Users
+            .AsNoTracking() 
+            .FirstOrDefaultAsync(u => u.Email == email);
+        }
+        
         public async Task AddAsync(User user)
         {
             _context.Users.Add(user);
