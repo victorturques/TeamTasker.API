@@ -1,3 +1,4 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TeamTasker.API.DTOs;
@@ -5,6 +6,9 @@ using TeamTasker.API.Entities;
 using TeamTasker.API.Enums;
 using TeamTasker.API.Mappers;
 using TeamTasker.API.Repositories;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace TeamTasker.API.Controllers
 {
@@ -13,15 +17,23 @@ namespace TeamTasker.API.Controllers
     [Route("api/[controller]")]
     public class TasksController : ControllerBase
     {
-        
         private readonly ITaskRepository _taskRepository;
         private readonly IUserRepository _userRepository;
-
+        private readonly IValidator<CreateTaskDto> _createTaskValidator;
         
-        public TasksController(ITaskRepository taskRepository, IUserRepository userRepository)
+        // 1. Adicionamos o validador de Update aqui
+        private readonly IValidator<UpdateTaskDto> _updateTaskValidator;
+
+        public TasksController(
+            ITaskRepository taskRepository, 
+            IUserRepository userRepository,
+            IValidator<CreateTaskDto> createTaskValidator,
+            IValidator<UpdateTaskDto> updateTaskValidator) // 2. Injetamos no construtor
         {
             _taskRepository = taskRepository;
             _userRepository = userRepository;
+            _createTaskValidator = createTaskValidator;
+            _updateTaskValidator = updateTaskValidator;
         }
 
         [HttpGet]
@@ -35,12 +47,17 @@ namespace TeamTasker.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateTaskDto dto)
         {
-           
+            var validationResult = await _createTaskValidator.ValidateAsync(dto);
+
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors); 
+            }
+
             if (!await _userRepository.UserExistsAsync(dto.UserId))
             {
                 return BadRequest("Usuário não encontrado. Verifique o ID enviado.");
             }
-            
 
             var newTask = new JobTask
             {
@@ -61,19 +78,25 @@ namespace TeamTasker.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, UpdateTaskDto dto)
         {
+            // 3. Executamos a validação do Update logo na primeira linha
+            var validationResult = await _updateTaskValidator.ValidateAsync(dto);
+
+            if (!validationResult.IsValid)
+            {
+                // Devolve os erros formatados (400 Bad Request)
+                return BadRequest(validationResult.Errors); 
+            }
+
             var task = await _taskRepository.GetByIdAsync(id);
 
             if (task == null) return NotFound("Tarefa não encontrada.");
 
-           
             if (dto.UserId != task.UserId)
             {
-                
                 if (!await _userRepository.UserExistsAsync(dto.UserId))
                 {
                     return BadRequest("O novo usuário informado não existe.");
                 }
-                
             }
 
             task.Title = dto.Title;

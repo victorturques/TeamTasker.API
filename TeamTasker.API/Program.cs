@@ -4,8 +4,18 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;              
 using System.Text;                                 
 using TeamTasker.API.Services;
+using FluentValidation;
+using TeamTasker.API.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+builder.Configuration
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables();
+
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -76,6 +86,8 @@ builder.Services.AddAuthentication(x =>
         ValidateAudience = false
     };
 });
+
+builder.Services.AddValidatorsFromAssemblyContaining<CreateTaskDtoValidator>();
 
 
 var app = builder.Build();
