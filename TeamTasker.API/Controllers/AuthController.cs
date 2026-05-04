@@ -1,10 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TeamTasker.API.DTOs;
+using TeamTasker.API.Entities;
 using TeamTasker.API.Repositories;
 using TeamTasker.API.Services;
-
-
 
 namespace TeamTasker.API.Controllers
 {
@@ -15,7 +14,6 @@ namespace TeamTasker.API.Controllers
         private readonly IUserRepository _repository;
         private readonly TokenService _tokenService;
 
-        // Injeção de Dependência: O .NET entrega o Repo e o TokenService prontos aqui
         public AuthController(IUserRepository repository, TokenService tokenService)
         {
             _repository = repository;
@@ -23,21 +21,36 @@ namespace TeamTasker.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("login")]
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterDto model)
+        {
+            var existingUser = await _repository.GetUserByEmailAsync(model.Email);
+            if (existingUser != null)
+                return BadRequest("Email já está em uso.");
 
+            var newUser = new User
+            {
+                Name = model.Name,
+                Email = model.Email,
+                Password = model.Password
+            };
+
+            await _repository.CreateUserAsync(newUser);
+
+            return Ok("Usuário criado com sucesso.");
+        }
+
+        [AllowAnonymous]
+        [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto model)
         {
-            // Busca o usuário no banco pelo email
             var user = await _repository.GetUserByEmailAsync(model.Email);
 
-            //  Valida se o usuário existe e se a senha bate
-              if (user == null || user.Password != model.Password)
+            if (user == null || user.Password != model.Password)
                 return Unauthorized("Usuário ou senha inválidos");
 
-            // Se deu tudo certo, gera o Token
             var token = _tokenService.GenerateToken(user);
 
-            // Devolve o token para quem chamou a API
             return Ok(new { token = token });
         }
     }

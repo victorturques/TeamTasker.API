@@ -9,6 +9,7 @@ namespace TeamTasker.API.Repositories
         Task<User?> GetByIdAsync(int id);
         
         Task<User?> GetUserByEmailAsync(string email);
+        Task CreateUserAsync(User user);
         
         Task AddAsync(User user);
         

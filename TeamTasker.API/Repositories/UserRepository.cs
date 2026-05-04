@@ -29,6 +29,12 @@ namespace TeamTasker.API.Repositories
             .AsNoTracking() 
             .FirstOrDefaultAsync(u => u.Email == email);
         }
+
+        public async Task CreateUserAsync(User user)
+        {
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
+        }
         
         public async Task AddAsync(User user)
         {
