@@ -19,7 +19,7 @@ jobs:
 
       - name: Publicar projeto
         run: dotnet publish TeamTasker.API/TeamTasker.API.csproj -c Release -o ./publish
-
+        
       - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
@@ -27,4 +27,8 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./publish/
+<<<<<<< HEAD
           server-dir: /
+=======
+          server-dir: /
+>>>>>>> 12d004944022c169f892afb32fa736206bdb511c
