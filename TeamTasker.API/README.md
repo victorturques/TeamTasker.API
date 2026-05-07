@@ -59,15 +59,25 @@ dotnet test
 
 ## 🔒 Guia de Uso (Autenticação)
 
-Como a API agora é segura, siga este fluxo para testar:
+Como a API é protegida por autenticação JWT, siga este fluxo para testar:
 
-1. **Crie um Usuário** (`POST /api/Users`) - *Rota Pública*
-2. **Faça Login** (`POST /api/Auth/login`) - *Rota Pública*
-   - Copie o **Token** gerado na resposta.
-3. **Autorize no Swagger:**
-   - Clique no cadeado 🔓 no topo da página.
-   - Cole o token (o sistema adiciona o prefixo "Bearer" automaticamente).
-4. **Acesse as Rotas** (`GET /api/Tasks`, etc) - *Rotas Protegidas*
+1. **Registre um usuário** (`POST /api/Auth/register`) — **Rota Pública**  
+   Crie sua conta informando os dados necessários.
+
+2. **Faça login** (`POST /api/Auth/login`) — **Rota Pública**  
+   Use as credenciais cadastradas no passo anterior.
+
+3. **Copie o token JWT** retornado no login.
+
+4. **Autorize no Swagger**  
+   - Clique no ícone de cadeado 🔓 no topo da página.  
+   - Cole o token no campo de autorização.  
+   - O sistema adiciona o prefixo `Bearer` automaticamente.
+
+5. **Acesse as rotas protegidas**  
+   Exemplo: `GET /api/Tasks` (e demais endpoints protegidos).
+
+   > ⚠️ Importante: sem fazer o registro primeiro, o login não será concluído.
 
 ## 🚀 Como Rodar o Projeto
 
